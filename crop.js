@@ -37,13 +37,14 @@ let originalWidth = 0;
 let originalHeight = 0;
 
 async function initFFmpeg() {
+    const lang = getCurrentLang();
     try {
-        elements.status.innerText = 'FFmpeg 엔진 로딩 중...';
+        elements.status.innerText = translations[lang].status_init;
         await ffmpeg.load();
         isFFmpegLoaded = true;
-        elements.status.innerText = '준비 완료: 파일을 선택하세요.';
+        elements.status.innerText = translations[lang].status_ready;
     } catch (error) {
-        elements.status.innerText = '엔진 로드 실패: ' + error.message;
+        elements.status.innerText = translations[lang].status_error + error.message;
     }
 }
 
@@ -229,6 +230,7 @@ elements.exportBtn.onclick = async () => {
     const y = elements.cropY.value;
     const w = elements.cropW.value;
     const h = elements.cropH.value;
+    const lang = getCurrentLang();
 
     ffmpeg.setProgress(({ ratio }) => {
         const p = Math.round(ratio * 100);
@@ -237,6 +239,7 @@ elements.exportBtn.onclick = async () => {
     });
 
     try {
+        elements.downloadLink.download = `output_crop.mp4`;
         ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(videoFile));
         // crop=w:h:x:y
         await ffmpeg.run('-i', 'input.mp4', '-vf', `crop=${w}:${h}:${x}:${y}`, '-c:a', 'copy', 'output.mp4');
@@ -244,9 +247,9 @@ elements.exportBtn.onclick = async () => {
         const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
         elements.downloadLink.href = url;
         elements.downloadContainer.classList.remove('hidden');
-        elements.progressText.innerText = '인코딩 완료!';
+        elements.progressText.innerText = translations[lang].encoding_done;
     } catch (err) {
-        elements.progressText.innerText = '오류 발생: ' + err.message;
+        elements.progressText.innerText = translations[lang].status_error + err.message;
     } finally {
         elements.exportBtn.disabled = false;
     }

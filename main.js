@@ -35,13 +35,14 @@ let isFFmpegLoaded = false;
 let videoFPS = 30;
 
 async function initFFmpeg() {
+    const lang = getCurrentLang();
     try {
-        elements.status.innerText = 'FFmpeg 엔진 로딩 중...';
+        elements.status.innerText = translations[lang].status_init;
         await ffmpeg.load();
         isFFmpegLoaded = true;
-        elements.status.innerText = '준비 완료: 파일을 선택하세요.';
+        elements.status.innerText = translations[lang].status_ready;
     } catch (error) {
-        elements.status.innerText = '엔진 로드 실패: ' + error.message;
+        elements.status.innerText = translations[lang].status_error + error.message;
     }
 }
 
@@ -153,7 +154,7 @@ elements.captureFrameBtn.onclick = () => {
     canvas.height = elements.videoPreview.videoHeight;
     canvas.getContext('2d').drawImage(elements.videoPreview, 0, 0);
     const link = document.createElement('a');
-    link.download = `frame_${elements.videoPreview.currentTime.toFixed(2)}s.png`;
+    link.download = `output_frame_${elements.videoPreview.currentTime.toFixed(2)}s.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
 };
@@ -166,6 +167,7 @@ elements.exportBtn.onclick = async () => {
 
     const start = elements.startTime.value;
     const end = elements.endTime.value;
+    const lang = getCurrentLang();
 
     ffmpeg.setProgress(({ ratio }) => {
         const p = Math.round(ratio * 100);
@@ -174,15 +176,16 @@ elements.exportBtn.onclick = async () => {
     });
 
     try {
+        elements.downloadLink.download = `output_trim.mp4`;
         ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(videoFile));
         await ffmpeg.run('-ss', start, '-to', end, '-i', 'input.mp4', '-c:v', 'copy', '-c:a', 'copy', 'output.mp4');
         const data = ffmpeg.FS('readFile', 'output.mp4');
         const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
         elements.downloadLink.href = url;
         elements.downloadContainer.classList.remove('hidden');
-        elements.progressText.innerText = '인코딩 완료!';
+        elements.progressText.innerText = translations[lang].encoding_done;
     } catch (err) {
-        elements.progressText.innerText = '오류 발생: ' + err.message;
+        elements.progressText.innerText = translations[lang].status_error + err.message;
     } finally {
         elements.exportBtn.disabled = false;
     }

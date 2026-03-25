@@ -37,13 +37,36 @@ body {
 
 header {
     margin-bottom: 40px;
+    position: relative;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.lang-selector {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: var(--background);
+    color: var(--foreground);
+    cursor: pointer;
+    outline: none;
+}
+
+.lang-selector:focus {
+    border-color: var(--ring);
 }
 
 h1 {
     font-size: 1.875rem;
     font-weight: 700;
     letter-spacing: -0.025em;
-    margin: 0 0 8px 0;
+    margin: 0;
 }
 
 .nav-menu {

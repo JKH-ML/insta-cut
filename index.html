@@ -22,17 +22,26 @@
 
     <script src="coi-serviceworker.js"></script>
     <link rel="stylesheet" href="style.css">
+    <script src="i18n.js"></script>
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 </head>
 <body>
     <div class="app-container">
         <header>
-            <h1>Video Editor</h1>
+            <div class="header-top">
+                <h1 data-i18n="title">Video Editor</h1>
+                <select id="lang-selector" class="lang-selector">
+                    <option value="ko">한국어</option>
+                    <option value="en">English</option>
+                    <option value="zh">中文</option>
+                    <option value="ja">日本語</option>
+                </select>
+            </div>
             <nav class="nav-menu">
-                <a href="index.html" class="nav-link active">Trim</a>
-                <a href="crop.html" class="nav-link">Crop</a>
+                <a href="index.html" class="nav-link active" data-i18n="trim">Trim</a>
+                <a href="crop.html" class="nav-link" data-i18n="crop">Crop</a>
             </nav>
-            <div id="status" class="status-badge">FFmpeg initializing...</div>
+            <div id="status" class="status-badge" data-i18n="status_init">FFmpeg initializing...</div>
         </header>
         
         <main>
@@ -40,7 +49,7 @@
                 <input type="file" id="uploader" accept="video/mp4" class="hidden">
                 <div class="upload-content">
                     <span class="upload-icon">↑</span>
-                    <p class="upload-label">Click or drag to upload video</p>
+                    <p class="upload-label" data-i18n="upload_label">Click or drag to upload video</p>
                 </div>
             </section>
 
@@ -62,7 +71,7 @@
                     <!-- Trim Card -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Trim</h3>
+                            <h3 class="card-title" data-i18n="trim_card_title">Trim</h3>
                         </div>
                         <div class="card-content">
                             <div class="timeline-container">
@@ -74,18 +83,18 @@
                             
                             <div class="input-grid">
                                 <div class="input-box">
-                                    <label>Start (s)</label>
+                                    <label data-i18n="start_label">Start (s)</label>
                                     <input type="number" id="start-time" value="0.00" step="0.01">
                                 </div>
                                 <div class="input-box">
-                                    <label>End (s)</label>
+                                    <label data-i18n="end_label">End (s)</label>
                                     <input type="number" id="end-time" value="0.00" step="0.01">
                                 </div>
                             </div>
 
                             <div class="button-group">
-                                <button id="set-start-btn" class="btn-outline">Set Start</button>
-                                <button id="set-end-btn" class="btn-outline">Set End</button>
+                                <button id="set-start-btn" class="btn-outline" data-i18n="set_start">Set Start</button>
+                                <button id="set-end-btn" class="btn-outline" data-i18n="set_end">Set End</button>
                             </div>
                         </div>
                     </div>
@@ -93,11 +102,11 @@
                     <!-- Actions Card -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Actions</h3>
+                            <h3 class="card-title" data-i18n="actions_title">Actions</h3>
                         </div>
                         <div class="card-content action-card-content">
-                            <button id="capture-frame-btn" class="btn-secondary">Capture Frame (PNG)</button>
-                            <button id="export-btn" class="btn-primary btn-full">Export Video</button>
+                            <button id="capture-frame-btn" class="btn-secondary" data-i18n="capture_btn">Capture Frame (PNG)</button>
+                            <button id="export-btn" class="btn-primary btn-full" data-i18n="export_trim_btn">Export Video</button>
                         </div>
                     </div>
                 </div>
@@ -105,7 +114,7 @@
                 <!-- Progress -->
                 <div id="progress-container" class="progress-section hidden">
                     <div class="progress-info">
-                        <span id="progress-text">Processing...</span>
+                        <span id="progress-text" data-i18n="progress_processing">Processing...</span>
                         <span id="progress-percent">0%</span>
                     </div>
                     <div class="progress-bar-bg">
@@ -115,7 +124,7 @@
 
                 <!-- Download -->
                 <div id="download-container" class="download-section hidden">
-                    <a id="download-link" href="#" download="edited.mp4" class="btn-download">Download Result</a>
+                    <a id="download-link" href="#" download="edited.mp4" class="btn-download" data-i18n="download_btn">Download Result</a>
                 </div>
             </section>
         </main>
