@@ -1,6 +1,8 @@
 const translations = {
     ko: {
         title: "비디오 에디터",
+        home: "홈",
+        repo: "GitHub 저장소",
         meta_title: "온라인 MP4 비디오 에디터 | 빠르고 안전한 브라우저 기반 편집기",
         meta_description: "브라우저에서 직접 MP4 비디오를 자르고 크롭하세요. 서버 업로드 없이 100% 프라이버시가 보장되는 FFmpeg 기반 편집기입니다.",
         trim: "트림",
@@ -31,6 +33,8 @@ const translations = {
     },
     en: {
         title: "Video Editor",
+        home: "Home",
+        repo: "GitHub Repository",
         meta_title: "Online MP4 Video Editor | Fast & Private Browser-based Tool",
         meta_description: "Trim and crop MP4 videos directly in your browser. No uploads required, 100% private and fast using FFmpeg.wasm.",
         trim: "Trim",
@@ -61,6 +65,8 @@ const translations = {
     },
     zh: {
         title: "视频编辑器",
+        home: "首页",
+        repo: "GitHub 仓库",
         meta_title: "在线 MP4 视频编辑器 | 快速、私密的浏览器端工具",
         meta_description: "在浏览器中直接裁剪和切边 MP4 视频。无需上传，基于 FFmpeg.wasm 的 100% 私密快捷工具。",
         trim: "裁剪",
@@ -91,6 +97,8 @@ const translations = {
     },
     ja: {
         title: "ビデオエディター",
+        home: "ホーム",
+        repo: "GitHub リポジトリ",
         meta_title: "オンライン MP4 ビデオエディター | 高速・安全なブラウザベースの編集ツール",
         meta_description: "ブラウザ上で直接 MP4 ビデオをトリミング・クロップ。アップロード不要で 100% プライバシーが保護される FFmpeg ベースの編集器。",
         trim: "トリミング",
@@ -116,7 +124,7 @@ const translations = {
         y_offset: "Y オフセット",
         width_label: "幅",
         height_label: "高さ",
-        reset_btn: "フルサイズにリセット",
+        reset_btn: "フルサイズにリ셋",
         export_crop_btn: "クロップしたビデオを書き出し"
     }
 };

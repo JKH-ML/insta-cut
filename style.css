@@ -58,8 +58,60 @@ header {
     outline: none;
 }
 
-.lang-selector:focus {
-    border-color: var(--ring);
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-home {
+    text-decoration: none;
+    font-size: 1.25rem;
+    color: var(--foreground);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+}
+
+.btn-home:hover {
+    background-color: var(--secondary);
+}
+
+footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+.btn-repo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+}
+
+.btn-repo:hover {
+    background-color: var(--secondary);
+    color: var(--foreground);
+}
+
+.btn-repo svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
 }
 
 h1 {
