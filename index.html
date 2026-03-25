@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online MP4 Video Editor | Fast, Private & Browser-based Trimmer</title>
+    <meta name="description" content="Edit, cut, and trim MP4 videos directly in your browser. No upload required, 100% private and fast using FFmpeg.wasm. Perfect for quick social media clips.">
+    <meta name="keywords" content="video editor, mp4 trimmer, online video cutter, browser video editor, ffmpeg wasm, private video editing, no upload video editor">
+    <meta name="author" content="JKH-ML">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jkh-ml.github.io/insta-cut/">
+    <meta property="og:title" content="Online MP4 Video Editor | Fast & Private">
+    <meta property="og:description" content="Cut and trim MP4 videos in seconds without uploading to any server.">
+    <meta property="og:image" content="https://jkh-ml.github.io/insta-cut/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Online MP4 Video Editor">
+    <meta property="twitter:description" content="Fast, browser-based MP4 trimmer using FFmpeg.wasm.">
+
+    <script src="coi-serviceworker.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Video Editor</h1>
+            <div id="status" class="status-badge">FFmpeg initializing...</div>
+        </header>
+        
+        <main>
+            <section class="upload-area" id="drop-zone">
+                <input type="file" id="uploader" accept="video/mp4" class="hidden">
+                <div class="upload-content">
+                    <span class="upload-icon">↑</span>
+                    <p class="upload-label">Click or drag to upload video</p>
+                </div>
+            </section>
+
+            <section id="editor-container" class="editor-main hidden">
+                <!-- Preview Card -->
+                <div class="card video-preview-card">
+                    <div class="card-content">
+                        <div class="video-wrapper">
+                            <video id="video-preview" controls></video>
+                        </div>
+                        <div class="current-info">
+                            <span id="current-time-val" class="time-val">0.00s</span>
+                            <span id="current-frame-val" class="frame-val">Frame 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls-grid">
+                    <!-- Trim Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Trim</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="timeline-container">
+                                <div class="timeline-track"></div>
+                                <div id="timeline-range" class="timeline-range"></div>
+                                <input type="range" id="range-start" class="range-slider" min="0" max="100" value="0" step="0.01">
+                                <input type="range" id="range-end" class="range-slider" min="0" max="100" value="100" step="0.01">
+                            </div>
+                            
+                            <div class="input-grid">
+                                <div class="input-box">
+                                    <label>Start (s)</label>
+                                    <input type="number" id="start-time" value="0.00" step="0.01">
+                                </div>
+                                <div class="input-box">
+                                    <label>End (s)</label>
+                                    <input type="number" id="end-time" value="0.00" step="0.01">
+                                </div>
+                            </div>
+
+                            <div class="button-group">
+                                <button id="set-start-btn" class="btn-outline">Set Start</button>
+                                <button id="set-end-btn" class="btn-outline">Set End</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Actions</h3>
+                        </div>
+                        <div class="card-content action-card-content">
+                            <button id="capture-frame-btn" class="btn-secondary">Capture Frame (PNG)</button>
+                            <button id="export-btn" class="btn-primary btn-full">Export Video</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress -->
+                <div id="progress-container" class="progress-section hidden">
+                    <div class="progress-info">
+                        <span id="progress-text">Processing...</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Download -->
+                <div id="download-container" class="download-section hidden">
+                    <a id="download-link" href="#" download="edited.mp4" class="btn-download">Download Result</a>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
