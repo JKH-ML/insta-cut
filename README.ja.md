@@ -1,0 +1,77 @@
+# 🎬 insta-cut
+
+**高速、プライベート、ブラウザベースの MP4 ビデオトリマー。**
+
+[English](README.md) | [한국어](README.ko.md) | [简体中文](README.zh.md) | [日本語](README.ja.md)
+
+[![GitHub license](https://img.shields.io/github/license/JKH-ML/insta-cut)](https://github.com/JKH-ML/insta-cut/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/JKH-ML/insta-cut)](https://github.com/JKH-ML/insta-cut/stargazers)
+
+`insta-cut` は、サーバーへのアップロードなしでブラウザ上で即座に動作する高性能な MP4 編集ツールです。**FFmpeg.wasm** を使用し、すべての映像処理がユーザーのローカル環境で行われるため、データ流出の心配なく安全かつ迅速に動画をカットできます。
+
+<div align="center">
+  <a href="https://jkh-ml.github.io/insta-cut/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/🚀%20Live%20Demo%20はこちら-6366f1?style=for-the-badge&logoColor=white" alt="Live Demo">
+  </a>
+</div>
+
+---
+
+## ✨ 主な機能 (Key Features)
+
+- **⚡ サーバーレスエンコーディング**: 動画ファイルをサーバーにアップロードしません。ブラウザ内部で即座に処理されます。
+- **✂️ 超精密カット編集**: 0.01秒単位の微調整およびフレーム単位の探索が可能です。
+- **🖼️ 高画質フレームキャプチャ**: 任意のシーンを即座に PNG 画像として抽出します。
+- **⌨️ キーボードショートカット対応**: 方向キー（←, →）とスペースキーを利用した効率的なタイムライン制御。
+- **🎨 モダン UI/UX**: shadcn/ui スタイルのミニマルで洗練されたデザイン。
+- **🔒 プライバシー保護**: すべての作業がローカルで完了するため、機密性の高い動画も安心して編集できます。
+
+## 🛠️ 技術スタック (Tech Stack)
+
+- **Engine**: [FFmpeg.wasm](https://ffmpegwasm.netlify.app/) (WebAssembly)
+- **Frontend**: Vanilla HTML5, CSS3 (Modern Zinc Theme), JavaScript (ES6+)
+- **SEO**: メタタグ、robots.txt、sitemap.xml を最適化
+- **Deployment**: GitHub Pages (COI Service Worker 経由で SharedArrayBuffer をサポート)
+
+## 📖 使用方法 (Quick Start)
+
+1. **ファイルのアップロード**: MP4 ファイルをドラッグ＆ドロップまたはクリックして選択します。
+2. **区間の設定**: 下部のスライダーまたはキーボードの方向キーを使用して開始/終了地点を設定します。
+    - `← / →`: 0.05秒移動
+    - `Shift + ← / →`: 0.01秒移動（フレーム単位）
+3. **キャプチャ/保存**:
+    - `現在のフレームをキャプチャ`: 現在のシーンを PNG として保存します。
+    - `ビデオをカットして保存`: 設定した区間をカットし、新しいファイルとしてダウンロードします。
+
+## 🕒 バージョン履歴 (Version History)
+
+### [v1.3.0] - 2026-03-25
+- **🎞️ GIF 変換**: 動画を高品質な GIF アニメーションに変換する機能を追加
+- **🔄 回転および反転**: 動画の90度回転および左右反転（ミラー）機能を追加
+- **⏩ 速度調節**: 0.5x ~ 2.0x の再生速度調節機能（オーディオピッチ自動補正）
+- **🔇 ミュートおよびオーディオ抽出**: ミュート保存および MP3 オーディオの個別抽出機能を追加
+- **🌙 ダークモード**: 視力保護のためのダークテーマ切り替えおよび設定保持機能を追加
+
+### [v1.2.0] - 2026-03-25
+- **🌐 多言語対応**: 韓国語、英語、中国語、日本語の選択機能を追加（i18n 適用）
+- **🔍 SEO 最適化**: 言語別のメタタグ（Title, Description）自動切り替え機能を追加
+- **📂 ファイル名の統一**: すべてのダウンロード結果の接頭辞を `output_` に統一
+
+### [v1.1.0] - 2026-03-25
+- **✂️ ビデオクロップ (Crop)**: 動画領域を自由に切り抜く機能を追加
+- **📐 クロッププリセット**: 16:9, 9:16, 1:1 比率の即時設定ボタンを追加
+- **🗺️ ナビゲーション**: トリム (Trim) とクロップ (Crop) ページ間の移動メニューを追加
+
+### [v1.0.0] - 2026-03-25
+- **🚀 初回リリース**: FFmpeg.wasm ベースのサーバーレスビデオトリマーを開発
+- **✂️ 精密トリム**: 0.01秒単位の区間設定およびエクスポートに対応
+- **🖼️ フレームキャプチャ**: 再生中の画面を PNG として保存する機能に対応
+- **🎨 モダン UI**: インタラクティブなスライダーおよびタイムラインデザインを適用
+
+## 📄 ライセンス (License)
+
+このプロジェクトは MIT License に従います。
+
+---
+
+**Developed with ❤️ by [JKH-ML](https://github.com/JKH-ML)**
