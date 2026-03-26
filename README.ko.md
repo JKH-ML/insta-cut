@@ -2,6 +2,9 @@
 
 **빠르고 안전한 브라우저 기반 MP4 비디오 트리머.**
 
+> **무제한 무료 + 오픈소스**  
+> **회원가입X · 광고X · 워터마크X · 데이터 수집X**
+
 [English](README.md) | [한국어](README.ko.md) | [简体中文](README.zh.md) | [日本語](README.ja.md)
 
 [![GitHub license](https://img.shields.io/github/license/JKH-ML/insta-cut)](https://github.com/JKH-ML/insta-cut/blob/main/LICENSE)

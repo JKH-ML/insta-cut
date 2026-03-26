@@ -2,6 +2,9 @@
 
 **高速、プライベート、ブラウザベースの MP4 ビデオトリマー。**
 
+> **無制限無料 + オープンソース**  
+> **会員登録不要 · 広告なし · ウォーターマークなし · データ収集なし**
+
 [English](README.md) | [한국어](README.ko.md) | [简体中文](README.zh.md) | [日本語](README.ja.md)
 
 [![GitHub license](https://img.shields.io/github/license/JKH-ML/insta-cut)](https://github.com/JKH-ML/insta-cut/blob/main/LICENSE)

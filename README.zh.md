@@ -2,6 +2,9 @@
 
 **快速、私密、基于浏览器的 MP4 视频裁剪工具。**
 
+> **无限制免费 + 开源**  
+> **无需注册 · 无广告 · 无水印 · 不收集数据**
+
 [English](README.md) | [한국어](README.ko.md) | [简体中文](README.zh.md) | [日本語](README.ja.md)
 
 [![GitHub license](https://img.shields.io/github/license/JKH-ML/insta-cut)](https://github.com/JKH-ML/insta-cut/blob/main/LICENSE)
