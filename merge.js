@@ -59,6 +59,8 @@ function formatSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+let draggedItemIndex = null;
+
 function updateFileListUI() {
     elements.fileList.innerHTML = '';
     if (selectedFiles.length === 0) {
@@ -73,17 +75,56 @@ function updateFileListUI() {
         selectedFiles.forEach((file, index) => {
             const li = document.createElement('li');
             li.className = 'file-item';
+            li.draggable = true;
+            
             li.innerHTML = `
                 <div class="file-info">
                     <span class="file-name">${file.name}</span>
                     <span class="file-size">${formatSize(file.size)}</span>
                 </div>
                 <div class="file-controls">
-                    <button class="control-btn" onclick="moveUp(${index})" ${index === 0 ? 'disabled' : ''} title="Move Up">↑</button>
-                    <button class="control-btn" onclick="moveDown(${index})" ${index === selectedFiles.length - 1 ? 'disabled' : ''} title="Move Down">↓</button>
-                    <button class="remove-file" onclick="removeFile(${index})" title="Remove">×</button>
+                    <button class="control-btn" onclick="event.stopPropagation(); moveUp(${index})" ${index === 0 ? 'disabled' : ''} title="Move Up">↑</button>
+                    <button class="control-btn" onclick="event.stopPropagation(); moveDown(${index})" ${index === selectedFiles.length - 1 ? 'disabled' : ''} title="Move Down">↓</button>
+                    <button class="remove-file" onclick="event.stopPropagation(); removeFile(${index})" title="Remove">×</button>
                 </div>
             `;
+
+            // Drag and Drop Events
+            li.ondragstart = (e) => {
+                draggedItemIndex = index;
+                li.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            };
+
+            li.ondragend = () => {
+                li.classList.remove('dragging');
+                draggedItemIndex = null;
+                // Remove all dragover styling
+                document.querySelectorAll('.file-item').forEach(item => item.style.borderTop = '');
+            };
+
+            li.ondragover = (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                if (draggedItemIndex !== null && draggedItemIndex !== index) {
+                    li.style.borderTop = '2px solid var(--primary)';
+                }
+            };
+
+            li.ondragleave = () => {
+                li.style.borderTop = '';
+            };
+
+            li.ondrop = (e) => {
+                e.preventDefault();
+                li.style.borderTop = '';
+                if (draggedItemIndex !== null && draggedItemIndex !== index) {
+                    const movedItem = selectedFiles.splice(draggedItemIndex, 1)[0];
+                    selectedFiles.splice(index, 0, movedItem);
+                    updateFileListUI();
+                }
+            };
+
             elements.fileList.appendChild(li);
         });
     }
