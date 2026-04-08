@@ -30,6 +30,7 @@ const translations = {
         progress_processing: "처리 중...",
         encoding_done: "인코딩 완료!",
         download_btn: "결과 다운로드",
+        result_preview: "결과물 미리보기",
         crop_settings_title: "크롭 설정",
         x_offset: "X 오프셋",
         y_offset: "Y 오프셋",
@@ -221,6 +222,7 @@ const translations = {
         progress_processing: "처리 중...",
         encoding_done: "인코딩 완료!",
         download_btn: "결과 다운로드",
+        result_preview: "결과물 미리보기",
         crop_settings_title: "크롭 설정",
         x_offset: "X 오프셋",
         y_offset: "Y 오프셋",
@@ -282,6 +284,9 @@ function applyTranslations(lang) {
 function getCurrentLang() {
     return localStorage.getItem('preferred_lang') || 'ko';
 }
+
+window.getCurrentLang = getCurrentLang;
+window.translations = translations;
 
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = getCurrentLang();

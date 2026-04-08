@@ -22,8 +22,9 @@
 - **⚡ Serverless Encoding**: No video uploads to servers. Processing happens entirely within the browser.
 - ✂️ **Precise Cut Editing**: Micro-adjustments in 0.01-second increments and frame-by-frame navigation.
 - 🔗 **Video Merge**: Combine multiple MP4 files into one with custom reordering.
-- 🔄 **Audio-Video Sync**: Automatically adjust video frame rate to match the exact length of an external audio file.
-- 🖼️ **High-Quality Frame Capture**: Instantly extract any scene as a PNG image.
+- **🔄 Audio-Video Sync**: Automatically adjust video frame rate to match the exact length of an external audio file.
+- **🎞️ All Frame Extraction**: Extract every frame of a video as high-quality PNG images and download them as a ZIP archive.
+- **🖼️ High-Quality Frame Capture**: Instantly extract any scene as a PNG image.
 - **⌨️ Keyboard Shortcut Support**: Efficient timeline control using arrow keys (←, →) and Spacebar.
 - **🎨 Modern UI/UX**: Minimalist and sophisticated design in shadcn/ui style.
 - **🔒 Privacy Protection**: All work is completed locally, so you can edit sensitive videos with peace of mind.
@@ -47,7 +48,12 @@
 
 ## 🕒 Version History
 
-### [v1.5.0] - 2026-04-06
+### [v1.7.0] - 2026-04-09
+- **👀 Result Preview**: Added a preview player to all tools (Trim, Crop, Merge, Sync) to verify the result before downloading.
+- **🛡️ Enhanced Stability**: Improved engine loading logic and applied defensive programming to prevent runtime errors.
+- **⚡ Sync Optimization**: Implemented real-time log-based progress tracking and speed optimization for large video sync tasks.
+
+### [v1.6.0] - 2026-04-09
 - **🔄 Audio-Video Sync**: Added a new "Sync" tool to perfectly align video speed with external audio files.
 - **🗺️ Navigation Update**: Added Sync menu and refined the UI for multi-file operations.
 
@@ -77,6 +83,15 @@
 - **✂️ Precision Trim**: Supported 0.01-second interval setting and export.
 - **🖼️ Frame Capture**: Supported saving the currently playing screen as PNG.
 - **🎨 Modern UI**: Applied interactive slider and timeline design.
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+**Developed with ❤️ by [JKH-ML](https://github.com/JKH-ML)**
+sign.
 
 ## 📄 License
 

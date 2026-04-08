@@ -162,9 +162,15 @@
 
                 <!-- Download -->
                 <div id="download-container" class="download-section hidden">
-                    <a id="download-link" href="#" download="cropped.mp4" class="btn-download" data-i18n="download_btn">Download Result</a>
+                    <div class="result-preview-card">
+                        <span class="result-preview-title" data-i18n="result_preview">Result Preview</span>
+                        <div class="result-video-wrapper">
+                            <video id="result-video-preview" controls></video>
+                        </div>
+                    </div>
+                    <a id="download-link" href="#" download="edited.mp4" class="btn-download" data-i18n="download_btn">Download Result</a>
                 </div>
-            </section>
+                </section>
         </main>
         <footer>
             <div class="footer-links">

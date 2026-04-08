@@ -21,7 +21,8 @@ const elements = {
     noFilesMsg: document.getElementById('no-files-msg'),
     clearListBtn: document.getElementById('clear-list-btn'),
     addMoreBtn: document.getElementById('add-more-btn'),
-    themeToggle: document.getElementById('theme-toggle')
+    themeToggle: document.getElementById('theme-toggle'),
+    resultVideoPreview: document.getElementById('result-video-preview')
 };
 
 let selectedFiles = [];
@@ -32,20 +33,24 @@ if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
 }
 
-elements.themeToggle.onclick = () => {
-    document.body.classList.toggle('dark-mode');
-    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-};
+if (elements.themeToggle) {
+    elements.themeToggle.onclick = () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    };
+}
 
 async function initFFmpeg() {
-    const lang = getCurrentLang();
+    const lang = (window.getCurrentLang && window.getCurrentLang()) || 'ko';
+    const t = (window.translations && window.translations[lang]) || translations[lang];
+    
     try {
-        elements.status.innerText = translations[lang].status_init;
+        if (elements.status) elements.status.innerText = t.status_init;
         await ffmpeg.load();
         isFFmpegLoaded = true;
-        elements.status.innerText = translations[lang].status_ready;
+        if (elements.status) elements.status.innerText = t.status_ready;
     } catch (error) {
-        elements.status.innerText = translations[lang].status_error + error.message;
+        if (elements.status) elements.status.innerText = t.status_error + error.message;
     }
 }
 
@@ -62,15 +67,17 @@ function formatSize(bytes) {
 let draggedItemIndex = null;
 
 function updateFileListUI() {
+    if (!elements.fileList) return;
     elements.fileList.innerHTML = '';
+    
     if (selectedFiles.length === 0) {
-        elements.noFilesMsg.classList.remove('hidden');
-        elements.editorContainer.classList.add('hidden');
-        elements.dropZone.classList.remove('hidden');
+        if (elements.noFilesMsg) elements.noFilesMsg.classList.remove('hidden');
+        if (elements.editorContainer) elements.editorContainer.classList.add('hidden');
+        if (elements.dropZone) elements.dropZone.classList.remove('hidden');
     } else {
-        elements.noFilesMsg.classList.add('hidden');
-        elements.editorContainer.classList.remove('hidden');
-        elements.dropZone.classList.add('hidden');
+        if (elements.noFilesMsg) elements.noFilesMsg.classList.add('hidden');
+        if (elements.editorContainer) elements.editorContainer.classList.remove('hidden');
+        if (elements.dropZone) elements.dropZone.classList.add('hidden');
         
         selectedFiles.forEach((file, index) => {
             const li = document.createElement('li');
@@ -89,7 +96,6 @@ function updateFileListUI() {
                 </div>
             `;
 
-            // Drag and Drop Events
             li.ondragstart = (e) => {
                 draggedItemIndex = index;
                 li.classList.add('dragging');
@@ -99,7 +105,6 @@ function updateFileListUI() {
             li.ondragend = () => {
                 li.classList.remove('dragging');
                 draggedItemIndex = null;
-                // Remove all dragover styling
                 document.querySelectorAll('.file-item').forEach(item => item.style.borderTop = '');
             };
 
@@ -151,12 +156,14 @@ window.moveDown = (index) => {
     updateFileListUI();
 };
 
-elements.clearListBtn.onclick = () => {
-    selectedFiles = [];
-    updateFileListUI();
-};
+if (elements.clearListBtn) {
+    elements.clearListBtn.onclick = () => {
+        selectedFiles = [];
+        updateFileListUI();
+    };
+}
 
-elements.addMoreBtn.onclick = () => elements.uploader.click();
+if (elements.addMoreBtn) elements.addMoreBtn.onclick = () => elements.uploader.click();
 
 function handleFiles(files) {
     if (!files || files.length === 0) return;
@@ -166,16 +173,18 @@ function handleFiles(files) {
     updateFileListUI();
 }
 
-elements.uploader.onchange = (e) => handleFiles(e.target.files);
+if (elements.uploader) elements.uploader.onchange = (e) => handleFiles(e.target.files);
 
-elements.dropZone.onclick = () => elements.uploader.click();
-elements.dropZone.ondragover = (e) => { e.preventDefault(); elements.dropZone.classList.add('dragover'); };
-elements.dropZone.ondragleave = () => elements.dropZone.classList.remove('dragover');
-elements.dropZone.ondrop = (e) => {
-    e.preventDefault();
-    elements.dropZone.classList.remove('dragover');
-    handleFiles(e.dataTransfer.files);
-};
+if (elements.dropZone) {
+    elements.dropZone.onclick = () => elements.uploader.click();
+    elements.dropZone.ondragover = (e) => { e.preventDefault(); elements.dropZone.classList.add('dragover'); };
+    elements.dropZone.ondragleave = () => elements.dropZone.classList.remove('dragover');
+    elements.dropZone.ondrop = (e) => {
+        e.preventDefault();
+        elements.dropZone.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+    };
+}
 
 async function runFFmpegMerge() {
     if (selectedFiles.length < 2) {
@@ -183,15 +192,17 @@ async function runFFmpegMerge() {
         return;
     }
 
-    const lang = getCurrentLang();
-    elements.exportBtn.disabled = true;
-    elements.progressContainer.classList.remove('hidden');
-    elements.downloadContainer.classList.add('hidden');
+    const lang = (window.getCurrentLang && window.getCurrentLang()) || 'ko';
+    const t = (window.translations && window.translations[lang]) || translations[lang];
+    
+    if (elements.exportBtn) elements.exportBtn.disabled = true;
+    if (elements.progressContainer) elements.progressContainer.classList.remove('hidden');
+    if (elements.downloadContainer) elements.downloadContainer.classList.add('hidden');
 
     ffmpeg.setProgress(({ ratio }) => {
         const p = Math.round(ratio * 100);
-        elements.progressFill.style.width = `${p}%`;
-        elements.progressPercent.innerText = `${p}%`;
+        if (elements.progressFill) elements.progressFill.style.width = `${p}%`;
+        if (elements.progressPercent) elements.progressPercent.innerText = `${p}%`;
     });
 
     try {
@@ -207,17 +218,22 @@ async function runFFmpegMerge() {
 
         ffmpeg.FS('writeFile', 'concat.txt', concatContent);
 
-        // We use the concat demuxer for fastest merging without re-encoding
-        // Note: This works best if all files have the same resolution/codec.
-        // If they differ, a more complex filter_complex approach would be needed.
         await ffmpeg.run('-f', 'concat', '-safe', '0', '-i', 'concat.txt', '-c', 'copy', 'output_merged.mp4');
 
         const data = ffmpeg.FS('readFile', 'output_merged.mp4');
         const url = URL.createObjectURL(new Blob([data.buffer]));
-        elements.downloadLink.href = url;
-        elements.downloadLink.download = 'output_merged.mp4';
-        elements.downloadContainer.classList.remove('hidden');
-        elements.progressText.innerText = translations[lang].encoding_done;
+        
+        if (elements.downloadLink) {
+            elements.downloadLink.href = url;
+            elements.downloadLink.download = 'output_merged.mp4';
+        }
+        
+        if (elements.resultVideoPreview) {
+            elements.resultVideoPreview.src = url;
+        }
+        
+        if (elements.downloadContainer) elements.downloadContainer.classList.remove('hidden');
+        if (elements.progressText) elements.progressText.innerText = t.encoding_done;
 
         // Cleanup FS
         inputNames.forEach(name => ffmpeg.FS('unlink', name));
@@ -225,10 +241,10 @@ async function runFFmpegMerge() {
 
     } catch (err) {
         console.error(err);
-        elements.progressText.innerText = translations[lang].status_error + err.message;
+        if (elements.progressText) elements.progressText.innerText = t.status_error + err.message;
     } finally {
-        elements.exportBtn.disabled = false;
+        if (elements.exportBtn) elements.exportBtn.disabled = false;
     }
 }
 
-elements.exportBtn.onclick = runFFmpegMerge;
+if (elements.exportBtn) elements.exportBtn.onclick = runFFmpegMerge;

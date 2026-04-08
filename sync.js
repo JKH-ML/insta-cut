@@ -25,7 +25,8 @@ const elements = {
     targetFps: document.getElementById('target-fps'),
     videoFileInfo: document.getElementById('video-file-info'),
     audioFileInfo: document.getElementById('audio-file-info'),
-    themeToggle: document.getElementById('theme-toggle')
+    themeToggle: document.getElementById('theme-toggle'),
+    resultVideoPreview: document.getElementById('result-video-preview')
 };
 
 let videoFile = null;
@@ -35,39 +36,65 @@ let videoDuration = 0;
 let audioDuration = 0;
 let videoFPS = 30; // Default
 let isProcessing = false;
+let calculatedNewFPS = 30;
 
 // Theme Initialization
 if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
 }
 
-elements.themeToggle.onclick = () => {
-    document.body.classList.toggle('dark-mode');
-    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-};
+if (elements.themeToggle) {
+    elements.themeToggle.onclick = () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    };
+}
 
 async function initFFmpeg() {
-    const lang = getCurrentLang();
+    const lang = (window.getCurrentLang && window.getCurrentLang()) || 'ko';
+    const t = (window.translations && window.translations[lang]) || translations[lang];
+    
     try {
-        elements.status.innerText = translations[lang].status_init;
+        if (elements.status) elements.status.innerText = t.status_init;
         await ffmpeg.load();
         isFFmpegLoaded = true;
-        elements.status.innerText = translations[lang].status_ready;
+        if (elements.status) elements.status.innerText = t.status_ready;
     } catch (error) {
-        elements.status.innerText = translations[lang].status_error + error.message;
+        if (elements.status) elements.status.innerText = t.status_error + error.message;
     }
 }
 
 initFFmpeg();
 
-// Logger to catch FPS from video metadata
+// Helper to parse time string (00:00:00.00) to seconds
+function parseTimeToSeconds(timeStr) {
+    const parts = timeStr.split(':');
+    if (parts.length < 3) return 0;
+    const hrs = parseFloat(parts[0]);
+    const mins = parseFloat(parts[1]);
+    const secs = parseFloat(parts[2]);
+    return (hrs * 3600) + (mins * 60) + secs;
+}
+
+// Logger to catch FPS and track encoding progress
 ffmpeg.setLogger(({ message }) => {
-    // Only capture FPS from metadata streams, NOT from encoding status lines
+    // 1. Detect FPS from metadata
     if (!isProcessing && message.includes('Stream') && message.includes('fps')) {
         const fpsMatch = message.match(/(\d+(?:\.\d+)?)\s+fps/);
         if (fpsMatch) {
             videoFPS = parseFloat(fpsMatch[1]);
             updateSyncCalculation();
+        }
+    }
+    
+    // 2. Track real-time progress during encoding
+    if (isProcessing && message.includes('time=')) {
+        const timeMatch = message.match(/time=(\d{2}:\d{2}:\d{2}.\d{2})/);
+        if (timeMatch && audioDuration > 0) {
+            const currentTime = parseTimeToSeconds(timeMatch[1]);
+            const p = Math.min(Math.round((currentTime / audioDuration) * 100), 99);
+            if (elements.progressFill) elements.progressFill.style.width = `${p}%`;
+            if (elements.progressPercent) elements.progressPercent.innerText = `${p}%`;
         }
     }
 });
@@ -79,13 +106,12 @@ async function handleVideoFile(file) {
     video.preload = 'metadata';
     video.onloadedmetadata = () => {
         videoDuration = video.duration;
-        elements.vDuration.innerText = videoDuration.toFixed(2) + 's';
-        elements.videoFileInfo.classList.remove('hidden');
+        if (elements.vDuration) elements.vDuration.innerText = videoDuration.toFixed(2) + 's';
+        if (elements.videoFileInfo) elements.videoFileInfo.classList.remove('hidden');
         updateSyncCalculation();
     };
     video.src = URL.createObjectURL(file);
     
-    // Probe for FPS using FFmpeg (Pre-processing)
     isProcessing = false;
     ffmpeg.FS('writeFile', 'input_v.mp4', await fetchFile(file));
     await ffmpeg.run('-i', 'input_v.mp4');
@@ -98,8 +124,8 @@ async function handleAudioFile(file) {
     audio.preload = 'metadata';
     audio.onloadedmetadata = () => {
         audioDuration = audio.duration;
-        elements.aDuration.innerText = audioDuration.toFixed(2) + 's';
-        elements.audioFileInfo.classList.remove('hidden');
+        if (elements.aDuration) elements.aDuration.innerText = audioDuration.toFixed(2) + 's';
+        if (elements.audioFileInfo) elements.audioFileInfo.classList.remove('hidden');
         updateSyncCalculation();
     };
     audio.src = URL.createObjectURL(file);
@@ -108,54 +134,53 @@ async function handleAudioFile(file) {
 function updateSyncCalculation() {
     if (videoDuration > 0 && audioDuration > 0) {
         const totalFrames = videoDuration * videoFPS;
-        const newFPS = totalFrames / audioDuration;
-        elements.vFrames.innerText = Math.round(totalFrames);
-        elements.targetFps.innerText = newFPS.toFixed(3) + ' FPS';
-        elements.editorContainer.classList.remove('hidden');
-        elements.exportBtn.disabled = false;
+        calculatedNewFPS = totalFrames / audioDuration;
+        if (elements.vFrames) elements.vFrames.innerText = Math.round(totalFrames);
+        if (elements.targetFps) elements.targetFps.innerText = calculatedNewFPS.toFixed(3) + ' FPS';
+        if (elements.editorContainer) elements.editorContainer.classList.remove('hidden');
+        if (elements.exportBtn) elements.exportBtn.disabled = false;
     }
 }
 
-elements.videoUploader.onchange = (e) => handleVideoFile(e.target.files[0]);
-elements.audioUploader.onchange = (e) => handleAudioFile(e.target.files[0]);
+if (elements.videoUploader) elements.videoUploader.onchange = (e) => handleVideoFile(e.target.files[0]);
+if (elements.audioUploader) elements.audioUploader.onchange = (e) => handleAudioFile(e.target.files[0]);
 
-elements.dropZoneVideo.onclick = () => elements.videoUploader.click();
-elements.dropZoneAudio.onclick = () => elements.audioUploader.click();
+if (elements.dropZoneVideo) {
+    elements.dropZoneVideo.onclick = () => elements.videoUploader.click();
+    elements.dropZoneVideo.ondragover = (e) => { e.preventDefault(); elements.dropZoneVideo.classList.add('dragover'); };
+    elements.dropZoneVideo.ondragleave = () => elements.dropZoneVideo.classList.remove('dragover');
+    elements.dropZoneVideo.ondrop = (e) => {
+        e.preventDefault();
+        elements.dropZoneVideo.classList.remove('dragover');
+        handleVideoFile(e.dataTransfer.files[0]);
+    };
+}
 
-elements.dropZoneVideo.ondragover = (e) => { e.preventDefault(); elements.dropZoneVideo.classList.add('dragover'); };
-elements.dropZoneVideo.ondragleave = () => elements.dropZoneVideo.classList.remove('dragover');
-elements.dropZoneVideo.ondrop = (e) => {
-    e.preventDefault();
-    elements.dropZoneVideo.classList.remove('dragover');
-    handleVideoFile(e.dataTransfer.files[0]);
-};
-
-elements.dropZoneAudio.ondragover = (e) => { e.preventDefault(); elements.dropZoneAudio.classList.add('dragover'); };
-elements.dropZoneAudio.ondragleave = () => elements.dropZoneAudio.classList.remove('dragover');
-elements.dropZoneAudio.ondrop = (e) => {
-    e.preventDefault();
-    elements.dropZoneAudio.classList.remove('dragover');
-    handleAudioFile(e.dataTransfer.files[0]);
-};
+if (elements.dropZoneAudio) {
+    elements.dropZoneAudio.onclick = () => elements.audioUploader.click();
+    elements.dropZoneAudio.ondragover = (e) => { e.preventDefault(); elements.dropZoneAudio.classList.add('dragover'); };
+    elements.dropZoneAudio.ondragleave = () => elements.dropZoneAudio.classList.remove('dragover');
+    elements.dropZoneAudio.ondrop = (e) => {
+        e.preventDefault();
+        elements.dropZoneAudio.classList.remove('dragover');
+        handleAudioFile(e.dataTransfer.files[0]);
+    };
+}
 
 elements.exportBtn.onclick = async () => {
     if (!videoFile || !audioFile || !isFFmpegLoaded) return;
     
-    const lang = getCurrentLang();
-    isProcessing = true; // Block FPS updates during encoding
-    elements.exportBtn.disabled = true;
-    elements.progressContainer.classList.remove('hidden');
-    elements.downloadContainer.classList.add('hidden');
+    const lang = (window.getCurrentLang && window.getCurrentLang()) || 'ko';
+    const t = (window.translations && window.translations[lang]) || translations[lang];
+    
+    isProcessing = true;
+    if (elements.exportBtn) elements.exportBtn.disabled = true;
+    if (elements.progressContainer) elements.progressContainer.classList.remove('hidden');
+    if (elements.downloadContainer) elements.downloadContainer.classList.add('hidden');
 
-    ffmpeg.setProgress(({ ratio }) => {
-        const p = Math.round(ratio * 100);
-        elements.progressFill.style.width = `${p}%`;
-        elements.progressPercent.innerText = `${p}%`;
-    });
+    const ptsRatio = audioDuration / videoDuration;
 
     try {
-        const ptsRatio = audioDuration / videoDuration;
-        
         ffmpeg.FS('writeFile', 'video.mp4', await fetchFile(videoFile));
         ffmpeg.FS('writeFile', 'audio.mp3', await fetchFile(audioFile));
 
@@ -165,27 +190,41 @@ elements.exportBtn.onclick = async () => {
             '-filter_complex', `[0:v]setpts=${ptsRatio}*PTS[v]`,
             '-map', '[v]',
             '-map', '1:a',
+            '-r', calculatedNewFPS.toFixed(3),
             '-c:v', 'libx264',
-            '-preset', 'fast',
-            '-crf', '23',
+            '-preset', 'ultrafast', // CRITICAL: Maximum speed for browser environment
+            '-tune', 'zerolatency', // Immediate feedback
+            '-crf', '25', // Balance between speed and quality
             '-c:a', 'aac',
-            '-b:a', '192k',
-            '-shortest',
+            '-b:a', '128k',
+            '-t', audioDuration.toFixed(2),
             'output_synced.mp4'
         );
 
         const data = ffmpeg.FS('readFile', 'output_synced.mp4');
         const url = URL.createObjectURL(new Blob([data.buffer]));
-        elements.downloadLink.href = url;
-        elements.downloadLink.download = 'output_synced.mp4';
-        elements.downloadContainer.classList.remove('hidden');
-        elements.progressText.innerText = translations[lang].encoding_done;
+        
+        if (elements.downloadLink) {
+            elements.downloadLink.href = url;
+            elements.downloadLink.download = 'output_synced.mp4';
+        }
+        
+        if (elements.resultVideoPreview) {
+            elements.resultVideoPreview.src = url;
+        }
+        
+        if (elements.downloadContainer) elements.downloadContainer.classList.remove('hidden');
+        if (elements.progressText) {
+            elements.progressText.innerText = t.encoding_done;
+            elements.progressPercent.innerText = '100%';
+            elements.progressFill.style.width = '100%';
+        }
         
     } catch (err) {
         console.error(err);
-        elements.progressText.innerText = translations[lang].status_error + err.message;
+        if (elements.progressText) elements.progressText.innerText = t.status_error + err.message;
     } finally {
         isProcessing = false;
-        elements.exportBtn.disabled = false;
+        if (elements.exportBtn) elements.exportBtn.disabled = false;
     }
 };
